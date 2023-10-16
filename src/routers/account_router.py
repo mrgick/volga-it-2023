@@ -2,7 +2,7 @@ from fastapi import Depends
 from fastapi.routing import APIRouter
 from passlib.context import CryptContext
 
-from ..schemas.account import CreateAccount, InfoAccount
+from ..schemas.account import CreateAccount, InfoAccount, LoginAccount, UpdateAccount
 from ..services.account_service import AccountService
 from ..tools.jwt import JWTPayload, TokenData, TokenResponse
 
@@ -18,28 +18,31 @@ async def me(
     token_data: TokenData = Depends(JWTPayload()), service: AccountService = Depends()
 ):
     """Получение данных о текущем аккаунте"""
-    return await service.info(token_data)
+    return await service.info(token_data.sub)
 
 
-@router.post("/SignIn")
-def sign_in(
-    token_data: TokenData = Depends(JWTPayload("client")),
-):
+@router.post("/SignIn", response_model=TokenResponse)
+async def sign_in(account: LoginAccount, service: AccountService = Depends()):
     """Получение нового jwt токена пользователя"""
-    pass
+    return await service.sign_in(account)
 
 
-@router.post("/SignUp", response_model=TokenResponse)
+@router.post("/SignUp", response_model=InfoAccount)
 async def sign_up(account: CreateAccount, service: AccountService = Depends()):
     """Регистрация нового аккаунта"""
     return await service.sign_up(account)
 
 
 @router.post("/SignOut")
-def sign_out():
+async def sign_out():
     """Выход из аккаунта"""
 
 
-@router.post("/Update")
-def update():
+@router.put("/Update", response_model=InfoAccount)
+async def update(
+    account: UpdateAccount,
+    token_data: TokenData = Depends(JWTPayload()),
+    service: AccountService = Depends(),
+):
     """Обновление своего аккаунта"""
+    return await service.update(account, token_data)
