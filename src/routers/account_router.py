@@ -1,8 +1,10 @@
 from fastapi import Depends
 from fastapi.routing import APIRouter
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 
 from ..schemas.account import CreateAccount, InfoAccount, LoginAccount, UpdateAccount
+from ..schemas.response import Success
 from ..services.account_service import AccountService
 from ..tools.jwt import JWTPayload, TokenData, TokenResponse
 
@@ -33,9 +35,14 @@ async def sign_up(account: CreateAccount, service: AccountService = Depends()):
     return await service.sign_up(account)
 
 
-@router.post("/SignOut")
-async def sign_out():
+@router.post("/SignOut", response_model=Success)
+async def sign_out(
+    token_data: TokenData = Depends(JWTPayload()),
+    service: AccountService = Depends(),
+    authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+):
     """Выход из аккаунта"""
+    return await service.sign_out(token_data, authorization.credentials)
 
 
 @router.put("/Update", response_model=InfoAccount)

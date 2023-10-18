@@ -11,5 +11,6 @@ class Account(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(255), unique=True)
     hashed_password: Mapped[str] = mapped_column(String(60))
-    isAdmin: Mapped[bool] = mapped_column(Boolean())
+    isAdmin: Mapped[bool] = mapped_column(Boolean(), default=False)
     balance: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), default=0.00)
+    is_deleted: Mapped[bool] = mapped_column(Boolean(), default=False)

@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 from pydantic import BaseModel, ValidationError
 
 from ..config import settings
+from ..database import redis_client
 from .exceptions import JWTException
 
 
@@ -27,7 +28,7 @@ class JWTPayload:
     def __init__(self):
         pass
 
-    def __call__(
+    async def __call__(
         self, authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer())
     ):
         try:
@@ -40,4 +41,6 @@ class JWTPayload:
             raise JWTException("expired_token")
         except ValidationError:
             raise JWTException()
+        if await redis_client.get(f"{payload.sub}|{authorization.credentials}"):
+            raise JWTException("blocked_token")
         return payload

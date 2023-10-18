@@ -1,4 +1,4 @@
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     database_url: PostgresDsn
+    redis_url: RedisDsn = "redis://localhost"
 
 
 settings = Settings(_env_file="prod.env", _env_file_encoding="utf-8")
