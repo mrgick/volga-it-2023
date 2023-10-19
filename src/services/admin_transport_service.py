@@ -1,7 +1,8 @@
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import exists, select
 
 from ..database import AsyncSession, get_async_session
+from ..models.account import Account
 from ..models.transport import Transport
 from ..schemas.admin_transport import TransportCreate, TransportUpdate
 from ..schemas.response import Success
@@ -32,7 +33,14 @@ class AdminTransportService:
             raise NotFound(f"Transport with id={transport_id} not found")
         return account
 
+    async def account_exists(self, ownerId: str):
+        stmt = exists(Account).select().filter_by(id=ownerId, isDeleted=False)
+        result = await self.session.execute(stmt)
+        if not result.scalar():
+            raise NotFound(f"Account with id={ownerId} not found")
+
     async def create_transport(self, create_data: TransportCreate) -> Transport:
+        await self.account_exists(create_data.ownerId)
         transport = Transport(**create_data.model_dump())
         self.session.add(transport)
         await self.session.commit()
@@ -42,6 +50,7 @@ class AdminTransportService:
     async def update_transport(
         self, transport_id: int, update_data: TransportUpdate
     ) -> Transport:
+        await self.account_exists(update_data.ownerId)
         transport = await self.get_transport(transport_id)
         for field, value in update_data:
             setattr(transport, field, value)
