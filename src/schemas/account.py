@@ -1,10 +1,11 @@
 from decimal import Decimal
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 
 class CreateAccount(BaseModel):
-    username: str = Field(max_length=255)
+    username: Annotated[str, StringConstraints(strip_whitespace=True, max_length=255)]
     password: str = Field(max_length=255)
 
 
