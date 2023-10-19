@@ -9,7 +9,7 @@ from ..schemas.response import Success
 from ..services.admin_account_service import AdminAccountService
 from ..tools.dependencies import AdminToken
 
-router = APIRouter(prefix="/Admin/Account", tags=["AdminAccountController"])
+router = APIRouter(prefix="/Account", tags=["AdminAccountController"])
 Service = Annotated[AdminAccountService, Depends()]
 
 
