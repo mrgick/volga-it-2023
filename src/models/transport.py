@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal, get_args
 
-from sqlalchemy import DECIMAL, Boolean, Enum, Float, ForeignKey, String, Text
+from sqlalchemy import DECIMAL, Boolean, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from . import Base
@@ -27,8 +27,8 @@ class Transport(Base):
     color: Mapped[str] = mapped_column(String(255))
     identifier: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(Text(), nullable=True)
-    latitude: Mapped[float] = mapped_column(Float())
-    longitude: Mapped[float] = mapped_column(Float())
+    latitude: Mapped[Decimal] = mapped_column(DECIMAL(8, 6))
+    longitude: Mapped[Decimal] = mapped_column(DECIMAL(9, 6))
     minutePrice: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), nullable=True)
     dayPrice: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), nullable=True)
     isDeleted: Mapped[bool] = mapped_column(Boolean(), default=False)

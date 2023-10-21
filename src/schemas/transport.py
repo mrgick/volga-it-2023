@@ -13,8 +13,8 @@ class TransportUpdate(BaseModel):
     color: str = Field(max_length=255)
     identifier: str = Field(max_length=255)
     description: str | None = None
-    latitude: float
-    longitude: float
+    latitude: Decimal = Field(ge=-90, le=90, max_digits=8, decimal_places=6)
+    longitude: Decimal = Field(ge=-180, le=180, max_digits=9, decimal_places=6)
     minutePrice: Annotated[
         Decimal, Field(ge=0.01, max_digits=10, decimal_places=2)
     ] | None = None
