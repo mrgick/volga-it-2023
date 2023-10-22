@@ -21,12 +21,12 @@ async def get_list_accounts(
     return await service.get_list_accounts(start, limit)
 
 
-@router.get("/{account_id}", response_model=Account)
+@router.get("/{accountId}", response_model=Account)
 async def get_account_detail(
-    account_id: PositiveInt, token_data: AdminToken, service: Service
+    accountId: PositiveInt, token_data: AdminToken, service: Service
 ):
     """Получение информации об аккаунте по id"""
-    return await service.get_account(account_id)
+    return await service.get_account(accountId)
 
 
 @router.post("", response_model=Account)
@@ -37,20 +37,20 @@ async def create_account(
     return await service.create_account(account)
 
 
-@router.put("/{account_id}", response_model=Account)
+@router.put("/{accountId}", response_model=Account)
 async def update_account(
-    account_id: PositiveInt,
+    accountId: PositiveInt,
     account: UpdateAccount,
     token_data: AdminToken,
     service: Service,
 ):
     """Изменение администратором аккаунта по id"""
-    return await service.update_account(account_id, account)
+    return await service.update_account(accountId, account)
 
 
-@router.delete("/{account_id}", response_model=Success)
+@router.delete("/{accountId}", response_model=Success)
 async def delete_account(
-    account_id: PositiveInt, token_data: AdminToken, service: Service
+    accountId: PositiveInt, token_data: AdminToken, service: Service
 ):
     """Удаление аккаунта по id"""
-    return await service.delete_account(account_id)
+    return await service.delete_account(accountId)

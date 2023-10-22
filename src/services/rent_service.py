@@ -2,23 +2,19 @@ import math
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from fastapi import Depends
 from sqlalchemy import exists, func, select
 from sqlalchemy.orm import selectinload
 
-from ..database import AsyncSession, get_async_session
 from ..models.account import Account
 from ..models.rent import PriceType, Rent
 from ..models.transport import Transport, TransportType
 from ..schemas.response import Success
 from ..tools.exceptions import BadRequest, NotFound
 from ..tools.jwt import TokenData
+from . import BaseSevice
 
 
-class RentService:
-    def __init__(self, session: AsyncSession = Depends(get_async_session)):
-        self.session = session
-
+class RentService(BaseSevice):
     async def get_transport_list(
         self, lat: Decimal, long: Decimal, radius: float, transportType: TransportType
     ) -> list[Transport]:
@@ -54,10 +50,8 @@ class RentService:
             raise BadRequest("You are not the renter or the owner of the transport")
         return rent
 
-    async def get_account_history(self, token_data: TokenData) -> list[Rent]:
-        stmt = select(Rent).filter_by(userId=token_data.sub)
-        result = await self.session.execute(stmt)
-        return result.scalars()
+    async def get_account_history(self, account_id: int) -> list[Rent]:
+        return await self.session.scalars(select(Rent).filter_by(userId=account_id))
 
     async def get_transport_history(
         self, transport_id: int, token_data: TokenData
@@ -119,13 +113,11 @@ class RentService:
         await self.session.refresh(rent)
         return rent
 
-    async def rent_end(
-        self, rent_id: int, lat: Decimal, long: Decimal, token_data: TokenData
-    ) -> Success:
+    async def rent_end(self, rent_id: int, lat: Decimal, long: Decimal) -> Success:
         # get rent
         stmt = (
             select(Rent)
-            .filter_by(id=rent_id, finalPrice=None)
+            .filter_by(id=rent_id, timeEnd=None)
             .options(
                 selectinload(Rent.user),
                 selectinload(Rent.transport).selectinload(Transport.owner),
@@ -135,8 +127,6 @@ class RentService:
         rent = result.scalar_one_or_none()
         if rent is None:
             raise NotFound("Opened rent not found")
-        if rent.userId != token_data.sub:
-            raise BadRequest("You are not the renter")
 
         # calculate finalPrice
         rent.timeEnd = datetime.now(timezone.utc)
@@ -163,3 +153,14 @@ class RentService:
         self.session.add(transport)
         await self.session.commit()
         return Success()
+
+    async def rent_end_user(
+        self, rent_id: int, lat: Decimal, long: Decimal, token_data: TokenData
+    ) -> Success:
+        if not await self.session.scalar(
+            exists(Rent)
+            .select()
+            .where(Rent.id == rent_id, Rent.userId == token_data.sub)
+        ):
+            raise BadRequest("You are not the renter")
+        return await self.rent_end(rent_id, lat, long)

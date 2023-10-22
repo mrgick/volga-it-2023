@@ -31,5 +31,5 @@ class Rent(Base):
     )
     finalPrice: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), nullable=True)
 
-    transport = relationship("Transport", back_populates="rents", lazy=True)
-    user = relationship("Account", back_populates="rents", lazy=True)
+    transport = relationship("Transport", back_populates="rents")
+    user = relationship("Account", back_populates="rents")

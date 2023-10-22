@@ -13,10 +13,10 @@ router = APIRouter(prefix="/Transport", tags=["TransportController"])
 Service = Annotated[TransportService, Depends()]
 
 
-@router.get("/{transport_id}", response_model=TransportInfo)
-async def get_transport(transport_id: PositiveInt, service: Service):
+@router.get("/{transportId}", response_model=TransportInfo)
+async def get_transport(transportId: PositiveInt, service: Service):
     """Получение информации о транспорте по id"""
-    return await service.get_transport(transport_id)
+    return await service.get_transport(transportId)
 
 
 @router.post("", response_model=TransportInfo)
@@ -27,20 +27,20 @@ async def create_transport(
     return await service.create_transport(token_data, create_data)
 
 
-@router.put("/{transport_id}", response_model=TransportInfo)
+@router.put("/{transportId}", response_model=TransportInfo)
 async def update_transport(
-    transport_id: PositiveInt,
+    transportId: PositiveInt,
     update_data: TransportUpdate,
     token_data: UserToken,
     service: Service,
 ):
     """Изменение транспорта оп id"""
-    return await service.update_transport(transport_id, token_data, update_data)
+    return await service.update_transport(transportId, token_data, update_data)
 
 
-@router.delete("/{transport_id}", response_model=Success)
+@router.delete("/{transportId}", response_model=Success)
 async def delete_transport(
-    transport_id: PositiveInt, token_data: UserToken, service: Service
+    transportId: PositiveInt, token_data: UserToken, service: Service
 ):
     """Удаление транспорта по id"""
-    return await service.delete_transport(transport_id, token_data)
+    return await service.delete_transport(transportId, token_data)

@@ -33,5 +33,5 @@ class Transport(Base):
     dayPrice: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), nullable=True)
     isDeleted: Mapped[bool] = mapped_column(Boolean(), default=False)
 
-    owner = relationship("Account", back_populates="transports", lazy=True)
-    rents = relationship("Rent", back_populates="transport", lazy=True)
+    owner = relationship("Account", back_populates="transports")
+    rents = relationship("Rent", back_populates="transport")

@@ -11,6 +11,7 @@ class RentInfo(BaseModel):
     id: PositiveInt
     transportId: PositiveInt
     userId: PositiveInt
+    timeStart: datetime
     timeEnd: datetime | None
     priceOfUnit: Decimal = Field(ge=0.01, max_digits=10, decimal_places=2)
     priceType: PriceType

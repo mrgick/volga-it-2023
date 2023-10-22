@@ -29,10 +29,10 @@ async def get_transport_list(
     return await service.get_transport_list(start, count, transportType)
 
 
-@router.get("/{transport_id}", response_model=TransportInfo)
-async def get_transport(transport_id: PositiveInt, service: Service):
+@router.get("/{transportId}", response_model=TransportInfo)
+async def get_transport(transportId: PositiveInt, service: Service):
     """Получение информации о транспорте по id"""
-    return await service.get_transport(transport_id)
+    return await service.get_transport(transportId)
 
 
 @router.post("", response_model=TransportInfo)
@@ -41,17 +41,17 @@ async def create_transport(create_data: TransportCreate, service: Service):
     return await service.create_transport(create_data)
 
 
-@router.put("/{transport_id}", response_model=TransportInfo)
+@router.put("/{transportId}", response_model=TransportInfo)
 async def update_transport(
-    transport_id: PositiveInt,
+    transportId: PositiveInt,
     update_data: TransportUpdate,
     service: Service,
 ):
     """Изменение транспорта оп id"""
-    return await service.update_transport(transport_id, update_data)
+    return await service.update_transport(transportId, update_data)
 
 
-@router.delete("/{transport_id}", response_model=Success)
-async def delete_transport(transport_id: PositiveInt, service: Service):
+@router.delete("/{transportId}", response_model=Success)
+async def delete_transport(transportId: PositiveInt, service: Service):
     """Удаление транспорта по id"""
-    return await service.delete_transport(transport_id)
+    return await service.delete_transport(transportId)

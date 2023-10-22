@@ -31,7 +31,7 @@ async def get_transport_list(
 @router.get("/MyHistory", response_model=list[RentInfo])
 async def get_account_history(service: Service, token_data: UserToken):
     """Получение информации об аренде по id"""
-    return await service.get_account_history(token_data)
+    return await service.get_account_history(token_data.sub)
 
 
 @router.get("/TransportHistory/{transportId}", response_model=list[RentInfo])
@@ -58,7 +58,7 @@ async def end_rent(
     rentId: PositiveInt, rent_end: RentEnd, service: Service, token_data: UserToken
 ):
     """Завершение аренды транспорта по id аренды"""
-    return await service.rent_end(rentId, rent_end.lat, rent_end.long, token_data)
+    return await service.rent_end_user(rentId, rent_end.lat, rent_end.long, token_data)
 
 
 @router.get("/{rentId}", response_model=RentInfo)

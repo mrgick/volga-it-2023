@@ -15,5 +15,5 @@ class Account(Base):
     balance: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), default=0.00)
     isDeleted: Mapped[bool] = mapped_column(Boolean(), default=False)
 
-    transports = relationship("Transport", back_populates="owner", lazy=True)
-    rents = relationship("Rent", back_populates="user", lazy=True)
+    transports = relationship("Transport", back_populates="owner")
+    rents = relationship("Rent", back_populates="user")
