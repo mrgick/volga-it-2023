@@ -1,18 +1,14 @@
-from fastapi import Depends
 from sqlalchemy import exists, select
 
-from ..database import AsyncSession, get_async_session
 from ..models.account import Account
 from ..models.transport import Transport
 from ..schemas.admin_transport import TransportCreate, TransportUpdate
 from ..schemas.response import Success
 from ..tools.exceptions import BadRequest, NotFound
+from . import BaseSevice
 
 
-class AdminTransportService:
-    def __init__(self, session: AsyncSession = Depends(get_async_session)):
-        self.session = session
-
+class AdminTransportService(BaseSevice):
     async def get_transport_list(
         self, start: int, count: int, transportType: str
     ) -> list[Transport]:

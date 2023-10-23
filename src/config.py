@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     database_url: PostgresDsn
-    redis_url: RedisDsn = "redis://localhost"
+    redis_url: RedisDsn
 
 
 settings = Settings()

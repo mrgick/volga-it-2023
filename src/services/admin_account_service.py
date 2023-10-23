@@ -1,9 +1,8 @@
 from datetime import timedelta
 
-from fastapi import Depends
 from sqlalchemy import exists, select, update
 
-from ..database import AsyncSession, get_async_session, redis_client
+from ..database import redis_client
 from ..models.account import Account
 from ..models.rent import Rent
 from ..models.transport import Transport
@@ -11,14 +10,10 @@ from ..schemas.admin_account import CreateAccount, UpdateAccount
 from ..schemas.response import Success
 from ..tools import pwd_context
 from ..tools.exceptions import AlreadyExists, BadRequest, NotFound
+from . import BaseSevice
 
 
-class AdminAccountService:
-    def __init__(
-        self, session: AsyncSession = Depends(get_async_session)
-    ) -> list[Account]:
-        self.session = session
-
+class AdminAccountService(BaseSevice):
     async def get_list_accounts(self, start: int, count: int) -> list[Account]:
         stmt = (
             select(Account)

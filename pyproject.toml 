@@ -19,6 +19,3 @@ ignore = [
     "F405",  # star import
     "E712",  # for sqlalchemy
 ]
-[tool.ruff.lint]
-fixable = ["ALL"]
-unfixable = ["E712"]

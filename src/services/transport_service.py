@@ -1,18 +1,14 @@
-from fastapi import Depends
 from sqlalchemy import select
 
-from ..database import AsyncSession, get_async_session
 from ..models.transport import Transport
 from ..schemas.response import Success
 from ..schemas.transport import TransportCreate, TransportUpdate
 from ..tools.exceptions import BadRequest, NotFound
 from ..tools.jwt import TokenData
+from . import BaseSevice
 
 
-class TransportService:
-    def __init__(self, session: AsyncSession = Depends(get_async_session)):
-        self.session = session
-
+class TransportService(BaseSevice):
     async def get_transport(self, transport_id) -> Transport:
         stmt = select(Transport).filter_by(id=transport_id)
         result = await self.session.execute(stmt)

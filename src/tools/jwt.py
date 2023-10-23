@@ -46,10 +46,11 @@ class JWTPayload:
             raise JWTException("expired_token")
         except ValidationError:
             raise JWTException()
-        bad_token = await redis_client.get(f"{payload.sub}|{authorization.credentials}")
-        deleted_user = await redis_client.get(f"{payload.sub}|isDeleted")
-        if bad_token or deleted_user:
-            raise JWTException("blocked_token")
+        bad_token = await redis_client.exists(
+            f"{payload.sub}|{authorization.credentials}", f"{payload.sub}|isDeleted"
+        )
+        if bad_token:
+            raise JWTException("bad_token")
         if self.is_admin:
             stmt = select(Account).where(
                 Account.id == payload.sub, Account.isAdmin == True  # noqa

@@ -1,17 +1,13 @@
-from fastapi import Depends
 from sqlalchemy import exists, select
 
-from ..database import AsyncSession, get_async_session
 from ..models.account import Account
 from ..schemas.response import Success
 from ..tools.exceptions import BadRequest, NotFound
 from ..tools.jwt import TokenData
+from . import BaseSevice
 
 
-class PaymentService:
-    def __init__(self, session: AsyncSession = Depends(get_async_session)):
-        self.session = session
-
+class PaymentService(BaseSevice):
     async def hesoyam(self, account_id: int, token_data: TokenData) -> Success:
         if account_id != token_data.sub:
             stmt = exists(Account).select().filter_by(id=token_data.sub, isAdmin=True)

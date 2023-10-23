@@ -1,23 +1,20 @@
 from datetime import datetime, timedelta
 
-from fastapi import Depends
 from jose import jwt
 from sqlalchemy import select
 
 from ..config import settings
-from ..database import AsyncSession, get_async_session, redis_client
+from ..database import redis_client
 from ..models.account import Account
 from ..schemas.account import CreateAccount, LoginAccount, UpdateAccount
 from ..schemas.response import Success
 from ..tools import pwd_context
 from ..tools.exceptions import AlreadyExists, BadRequest, NotFound
 from ..tools.jwt import TokenData, TokenDataCreate, TokenResponse
+from . import BaseSevice
 
 
-class AccountService:
-    def __init__(self, session: AsyncSession = Depends(get_async_session)):
-        self.session = session
-
+class AccountService(BaseSevice):
     async def info(self, account_id) -> Account:
         stmt = select(Account).where(
             Account.id == account_id, Account.isDeleted == False  # noqa
