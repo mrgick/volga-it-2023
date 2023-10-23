@@ -21,7 +21,7 @@ cp .env_example .env
 
     1. используя docker
 
-        1. Windows - скачать и установить [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+        1. Windows - скачать и установить [Docker Desktop](https://www.docker.com/products/docker-desktop/), собрать и запустить docker-compose.yaml
         2. Linux/MacOS
         ```bash
         docker-compose up
@@ -35,11 +35,11 @@ cp .env_example .env
         python -m venv venv
         ```
         3. Активировать среду python
-           1. Windows/MacOS
+           1. Windows
            ```bash
            source venv/scripts/activate
            ```
-           2. Linux
+           2. Linux/MacOS
            ```bash
            . venv/bin/activate
            ```
@@ -61,5 +61,5 @@ cp .env_example .env
         ```
 4. Swagger будет доступен по адресу http://127.0.0.1:8000/docs#/
 
-P.S. При запуске сервера инициализируется база данных в PostgreSQL (если таблиц ещё не существует) и создастся пользователь "admin" с паролем "admin" - администратор (если его еще не существует) - реализовано для облегчения ручного тестирования.
+При запуске сервера инициализируется база данных в PostgreSQL (если таблиц ещё не существует) и создастся пользователь "admin" с паролем "admin" - администратор (если его еще не существует) - реализовано для облегчения ручного тестирования.
 
