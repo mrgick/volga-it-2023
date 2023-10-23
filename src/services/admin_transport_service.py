@@ -64,5 +64,6 @@ class AdminTransportService:
         if transport.isDeleted:
             raise BadRequest("Transport is already deleted.")
         transport.isDeleted = True
+        transport.canBeRented = False
         await self.session.commit()
         return Success()

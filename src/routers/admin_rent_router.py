@@ -38,23 +38,38 @@ async def get_rent(rentId: PositiveInt, service: Service):
 
 @router.post("", response_model=RentInfo)
 async def rent_create(create_data: RentCreate, service: Service):
-    """Создание новой аренды"""
+    """
+    Создание новой аренды
+    (Пользователь и транспорт должны существовать;
+    Пользователь не должен быть собственником транспорта;
+    Если создается аренда не завершенной, то транспорт должен быть доступен для аренды)
+    """
     return await service.create_rent(create_data)
 
 
 @router.post("/End/{rentId}", response_model=Success)
 async def rent_end(rentId: PositiveInt, end_data: RentEnd, service: Service):
-    """Завершение аренды транспорта по id аренды"""
+    """
+    Завершение аренды транспорта по id аренды
+    (По аналогии, как метод у пользователя)
+    """
     return await service.rent_end(rentId, end_data.lat, end_data.long)
 
 
 @router.put("/{rentId}", response_model=RentInfo)
 async def rent_update(rentId: PositiveInt, update_data: RentUpdate, service: Service):
-    """Изменение записи об аренде по id"""
+    """
+    Изменение записи об аренде по id
+    (Изменяется только запись аренды в базе данных,
+    все остальные действия на усмотрения администратора)
+    """
     return await service.update_rent(rentId, update_data)
 
 
 @router.delete("/{rentId}", response_model=Success)
 async def rent_delete(rentId: PositiveInt, service: Service):
-    """Удаление информации об аренде по id"""
+    """
+    Удаление информации об аренде по id
+    (Полностью удаляется из системы)
+    """
     return await service.delete_rent(rentId)

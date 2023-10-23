@@ -19,7 +19,7 @@ class RentCreate(RentInfo):
             and self.finalPrice is not None
         ):
             raise ValueError(
-                "If one of timeEnd or finalPrice is given, the other must be given as well"
+                "If one of timeEnd or finalPrice is given, the other must be given as well"  # noqa
             )
         return self
 
