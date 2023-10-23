@@ -23,6 +23,8 @@ class PaymentService:
         account = result.scalar_one_or_none()
         if account is None:
             raise NotFound(f"Account with id={account_id} not found")
+        if account.balance + 250000 > 99999999:
+            raise BadRequest("Maximum account can be 99999999.99")
         account.balance += 250000
         self.session.add(account)
         await self.session.commit()

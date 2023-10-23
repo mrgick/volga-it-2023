@@ -34,6 +34,8 @@ class TransportService:
         self, transport_id: int, token_data: TokenData, update_data: TransportUpdate
     ) -> Transport:
         transport = await self.get_transport(transport_id)
+        if transport.isDeleted:
+            raise BadRequest("Transport is deleted.")
         if transport.ownerId != token_data.sub:
             raise BadRequest("Transport owner is not you.")
         for field, value in update_data:

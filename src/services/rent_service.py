@@ -58,15 +58,13 @@ class RentService(BaseSevice):
     ) -> list[Rent]:
         stmt = (
             select(Transport)
-            .filter_by(id=transport_id, ownerId=token_data.sub)
+            .filter_by(id=transport_id, ownerId=token_data.sub, isDeleted=False)
             .options(selectinload(Transport.rents))
         )
         result = await self.session.execute(stmt)
         transport = result.scalar_one_or_none()
         if transport is None:
             raise NotFound(f"Transport with id={transport_id} not found")
-        elif transport.ownerId != token_data.sub:
-            raise BadRequest("Transport owner is not you.")
         return transport.rents
 
     async def start_rent(
@@ -137,7 +135,7 @@ class RentService(BaseSevice):
             timedelta = math.ceil(timedelta.total_seconds() / 60)
         rent.finalPrice = rent.priceOfUnit * timedelta
 
-        # swap balance beetween user and owner
+        # swap balance between user and owner
         user: Account = rent.user
         owner: Account = rent.transport.owner
         user.balance -= rent.finalPrice
@@ -146,6 +144,8 @@ class RentService(BaseSevice):
         # set that transport can be rented
         transport: Transport = rent.transport
         transport.canBeRented = True
+        transport.latitude = lat
+        transport.longitude = long
 
         self.session.add(rent)
         self.session.add(user)
@@ -162,5 +162,5 @@ class RentService(BaseSevice):
             .select()
             .where(Rent.id == rent_id, Rent.userId == token_data.sub)
         ):
-            raise BadRequest("You are not the renter")
+            raise BadRequest("You are not the renter or rent not found")
         return await self.rent_end(rent_id, lat, long)

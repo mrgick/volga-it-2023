@@ -34,7 +34,7 @@ async def update_transport(
     token_data: UserToken,
     service: Service,
 ):
-    """Изменение транспорта оп id"""
+    """Изменение собственного неудаленного транспорта оп id"""
     return await service.update_transport(transportId, token_data, update_data)
 
 

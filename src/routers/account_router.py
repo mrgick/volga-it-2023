@@ -25,7 +25,10 @@ async def me(token_data: UserToken, service: Service):
 
 @router.post("/SignIn", response_model=TokenResponse)
 async def sign_in(account: LoginAccount, service: Service):
-    """Получение нового jwt токена пользователя"""
+    """
+    Получение нового jwt токена пользователя
+    (Пользователь должен быть неудален)
+    """
     return await service.sign_in(account)
 
 
@@ -41,7 +44,10 @@ async def sign_out(
     service: Service,
     authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
 ):
-    """Выход из аккаунта"""
+    """
+    Выход из аккаунта
+    (Блокировка токена)
+    """
     return await service.sign_out(token_data, authorization.credentials)
 
 
@@ -51,5 +57,8 @@ async def update(
     token_data: UserToken,
     service: Service,
 ):
-    """Обновление своего аккаунта"""
+    """
+    Обновление своего аккаунта
+    (нельзя использовать уже используемые в системе username)
+    """
     return await service.update(account, token_data)

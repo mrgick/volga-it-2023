@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, PositiveInt, StringConstraints
 
 
 class CreateAccount(BaseModel):
@@ -19,5 +19,6 @@ class UpdateAccount(CreateAccount):
 
 class InfoAccount(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    id: PositiveInt
     username: str = Field(max_length=255)
     balance: Decimal = Field(max_digits=10, decimal_places=2)
